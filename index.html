@@ -3,91 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f6efe3" />
-    <meta name="description" content="Convite de aniversário" />
-    <title>Meu aniversário! 🎈</title>
+    <meta name="theme-color" content="#050d13" />
+    <meta name="description" content="Convite de aniversário do Marcelo" />
+    <title>Niver do Marcelo</title>
     <link rel="icon" href="assets/gato.jpg" />
+    <link rel="preload" href="vendor/motions/mousey-snake-hip-hop.glb" as="fetch" crossorigin />
+    <link rel="preload" href="vendor/motions/mousey-samba-dancing.glb" as="fetch" crossorigin />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="confetti" aria-hidden="true">
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    </div>
+    <main class="phone-poster" aria-labelledby="invite-title">
+      <section class="hero-copy">
+        <p class="kicker">Oi, aqui é o Marcelo</p>
+        <h1 id="invite-title">
+          <span>Você</span>
+          <span>vai no meu</span>
+          <span>aniver_</span>
+          <span>sário?</span>
+        </h1>
+      </section>
 
-    <main>
-      <section class="invite" aria-labelledby="invite-title">
-        <p class="eyebrow"><span></span> VOCÊ ESTÁ CONVIDADO <span></span></p>
-        <div class="cake" aria-hidden="true">🎂</div>
-        <h1 id="invite-title">Você vai no meu <em>aniversário?</em></h1>
-        <p class="intro">Vai ter bolo, música e uma pessoa muito feliz se você estiver lá.</p>
+      <section class="answer-stage" id="answerStage" aria-label="Confirme sua presença">
+        <button class="answer-button yes-button" id="yesButton" type="button">Sim!</button>
 
-        <div class="answer-stage" id="answerStage" aria-label="Confirme sua presença">
-          <button class="button button-yes" id="yesButton" type="button">
-            <span>Sim, eu vou!</span>
-            <span aria-hidden="true">→</span>
-          </button>
-
-          <div class="no-runner" id="noRunner">
-            <div class="cat-carrier" aria-hidden="true">
-              <img src="assets/gato.jpg" alt="" />
-              <span class="paw paw-left"></span>
-              <span class="paw paw-right"></span>
-            </div>
-            <button class="button button-no" id="noButton" type="button">Não vou</button>
+        <div class="no-runner" id="noRunner">
+          <div class="cat-carrier" aria-hidden="true">
+            <img src="assets/gato.jpg" alt="" />
+            <span class="cat-arm cat-arm-left"></span>
+            <span class="cat-arm cat-arm-right"></span>
           </div>
-        </div>
-
-        <p class="hint" id="hint" aria-live="polite">Escolha com o coração…</p>
-      </section>
-
-      <section class="details" aria-labelledby="details-title">
-        <div class="details-heading">
-          <p class="eyebrow"><span></span> ANOTE AÍ</p>
-          <h2 id="details-title">Onde e quando</h2>
-        </div>
-
-        <div class="detail-list">
-          <article class="detail-card">
-            <div class="detail-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z" />
-                <circle cx="12" cy="9" r="2.5" />
-              </svg>
-            </div>
-            <div>
-              <p>LOCAL</p>
-              <h3>A definir</h3>
-              <span>O endereço aparece aqui em breve</span>
-            </div>
-          </article>
-
-          <article class="detail-card">
-            <div class="detail-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="8" />
-                <path d="M12 8v4.6l3 1.7" />
-              </svg>
-            </div>
-            <div>
-              <p>DATA &amp; HORÁRIO</p>
-              <h3>A definir</h3>
-              <span>Reserve um espacinho na agenda</span>
-            </div>
-          </article>
+          <button class="answer-button no-button" id="noButton" type="button">Não...</button>
         </div>
       </section>
+
+      <section class="event-details" aria-labelledby="details-title">
+        <h2 id="details-title">Onde e quando</h2>
+        <p>DATA - HORA - LOCAL</p>
+      </section>
+
+      <p class="micro-hint" id="hint" aria-live="polite">Escolha com cuidado.</p>
+
+      <button class="dance-shortcut" id="danceShortcut" type="button" aria-label="Ver a dancinha">💃</button>
     </main>
 
-    <div class="success" id="success" role="dialog" aria-modal="true" aria-labelledby="successTitle" hidden>
-      <div class="success-card">
-        <div class="success-burst" aria-hidden="true">🎉</div>
-        <p class="eyebrow"><span></span> RESPOSTA CERTA <span></span></p>
-        <h2 id="successTitle">Oba, te espero lá!</h2>
-        <p>Já pode ir preparando o passinho e o apetite para o bolo.</p>
-        <button class="button button-yes" id="closeSuccess" type="button">Voltar ao convite</button>
+    <section class="success-scene" id="successScene" role="dialog" aria-modal="true" aria-labelledby="successTitle" hidden>
+      <div class="success-copy">
+        <p class="kicker">Resposta certa</p>
+        <h2 id="successTitle">Oba!</h2>
+        <p>Te espero no meu aniversário. O gato já começou o samba.</p>
+        <button class="answer-button yes-button close-button" id="closeSuccess" type="button">Voltar</button>
       </div>
-    </div>
+      <div class="dance-stage" id="danceStage" aria-label="Gato 3D dançando samba"></div>
+    </section>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
+    <script src="dance-scene.js" type="module"></script>
   </body>
 </html>
