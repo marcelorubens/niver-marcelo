@@ -82,7 +82,6 @@ body {
 
 .admin-button {
   min-height: 64px;
-  width: 185px;
   padding: 10px 30px;
   background: var(--green);
   font-size: 36px;
