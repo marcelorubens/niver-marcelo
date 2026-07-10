@@ -165,7 +165,7 @@ function createSambaCat(baseModel, sambaMotion, catTexture) {
   const headBone = model.getObjectByName("mixamorigHead");
   if (headBone) headBone.add(createRiggedCatHead(headTexture));
 
-  model.scale.setScalar(0.031);
+  model.scale.setScalar(0.0465);
   model.position.y = -1.32;
   group.add(model);
 

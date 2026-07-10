@@ -24,10 +24,8 @@ let moving = false;
 let lastPosition = { x: 0, y: 108 };
 
 function fitAppToViewport() {
-  const scale = Math.min(window.innerHeight / 874, 1);
-  app.style.setProperty("--app-scale", String(scale));
   app.style.setProperty("--app-width", "100vw");
-  app.style.setProperty("--app-height", `${874 * scale}px`);
+  app.style.setProperty("--app-height", "100svh");
 }
 
 function showScreen(name) {

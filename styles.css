@@ -12,12 +12,9 @@
   --disabled: #e5e5e5;
   --disabled-text: #c7c7c7;
   --screen-w: 100vw;
-  --screen-h: 874px;
+  --screen-h: 100svh;
   --copy-w: min(306px, calc(100vw - 32px));
-  --copy-x: calc((100vw - var(--copy-w)) / 2);
   --stage-w: min(302px, calc(100vw - 32px));
-  --stage-x: calc((100vw - var(--stage-w)) / 2);
-  --frame-x: max(0px, calc((100vw - 402px) / 2));
   --font-display: "Google Sans Flex", "Google Sans", "Arial Black", system-ui, sans-serif;
   font-family: var(--font-display);
   font-synthesis: none;
@@ -66,8 +63,6 @@ button {
   width: var(--screen-w);
   height: var(--screen-h);
   background: var(--bg);
-  transform: scaleY(var(--app-scale, 1));
-  transform-origin: 50% 0;
 }
 
 .screen[hidden] {
@@ -121,13 +116,15 @@ button {
 }
 
 .screen-invite {
-  padding: 0 48px;
+  display: flex;
+  padding: 30px 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(38px, 6.4svh, 56px);
 }
 
 .hero-copy {
-  position: absolute;
-  top: 137px;
-  left: var(--copy-x);
   width: var(--copy-w);
   text-align: center;
 }
@@ -186,9 +183,7 @@ button {
 }
 
 .answer-stage {
-  position: absolute;
-  top: 473px;
-  left: var(--stage-x);
+  position: relative;
   width: var(--stage-w);
   height: 192px;
   touch-action: manipulation;
@@ -273,23 +268,17 @@ button {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.36);
 }
 
-.cat-arm {
+.cat-carrier::after {
+  content: "";
   position: absolute;
-  bottom: -8px;
-  width: 22px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--green);
-}
-
-.cat-arm-left {
-  left: 8px;
-  transform: rotate(18deg);
-}
-
-.cat-arm-right {
-  right: 8px;
-  transform: rotate(-18deg);
+  top: 14px;
+  left: 39px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: #f2352f;
+  box-shadow: 0 0 0 1px rgba(248, 251, 255, 0.36);
 }
 
 .no-runner.travelling {
@@ -302,9 +291,6 @@ button {
 }
 
 .date-line {
-  position: absolute;
-  top: 713px;
-  left: var(--copy-x);
   width: var(--copy-w);
   margin: 0;
   font-size: 19px;
@@ -317,12 +303,12 @@ button {
 }
 
 .dance-shortcut {
-  position: absolute;
-  right: calc(var(--frame-x) + 30px);
-  bottom: 30px;
   display: grid;
   width: 38px;
   height: 38px;
+  margin-top: clamp(4px, 1.2svh, 10px);
+  margin-right: max(14px, calc((100vw - 402px) / 2 + 30px));
+  align-self: flex-end;
   place-items: center;
   border: 0;
   border-radius: 0;
@@ -333,7 +319,7 @@ button {
 
 .screen-name {
   display: flex;
-  padding: 0 48px;
+  padding: 0 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -426,13 +412,14 @@ button {
 }
 
 .screen-dance {
-  padding: 0 48px;
+  display: flex;
+  padding: clamp(128px, 21.3svh, 186px) 16px 0;
+  flex-direction: column;
+  align-items: center;
 }
 
 .dance-placeholder {
-  position: absolute;
-  top: 186px;
-  left: var(--copy-x);
+  position: relative;
   display: flex;
   width: var(--copy-w);
   height: 502px;
@@ -468,11 +455,8 @@ button {
 }
 
 .see-you {
-  position: absolute;
-  left: var(--copy-x);
-  bottom: 239px;
   width: var(--copy-w);
-  margin: 0;
+  margin: clamp(-96px, -10.6svh, -72px) 0 0;
   font-size: 29px;
   line-height: 1.2;
   text-align: center;
@@ -483,10 +467,8 @@ button {
 }
 
 .hehe-button {
-  position: absolute;
-  left: calc((100vw - min(283px, calc(100vw - 32px))) / 2);
-  bottom: 120px;
   width: min(283px, calc(100vw - 32px));
+  margin-top: clamp(54px, 8.7svh, 76px);
   padding: 10px 30px;
   background: var(--green);
 }
