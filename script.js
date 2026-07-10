@@ -1,11 +1,24 @@
+const screens = {
+  invite: document.querySelector("#inviteScreen"),
+  name: document.querySelector("#nameScreen"),
+  dance: document.querySelector("#danceScreen"),
+};
+
 const stage = document.querySelector("#answerStage");
 const noRunner = document.querySelector("#noRunner");
 const noButton = document.querySelector("#noButton");
 const yesButton = document.querySelector("#yesButton");
 const hint = document.querySelector("#hint");
-const successScene = document.querySelector("#successScene");
-const closeSuccess = document.querySelector("#closeSuccess");
 const danceShortcut = document.querySelector("#danceShortcut");
+const nameForm = document.querySelector("#nameForm");
+const guestName = document.querySelector("#guestName");
+const okButton = document.querySelector("#okButton");
+const seeYouText = document.querySelector("#seeYouText");
+const heheButton = document.querySelector("#heheButton");
+const danceScreen = document.querySelector("#danceScreen");
+const app = document.querySelector(".invite-app");
+
+const STORAGE_KEY = "niver-marcelo-rsvp-names";
 
 const messages = [
   "O gato roubou o não.",
@@ -17,17 +30,39 @@ const messages = [
 
 let escapes = 0;
 let moving = false;
-let lastPosition = { x: 20, y: 108 };
+let lastPosition = { x: 0, y: 108 };
+
+function fitAppToViewport() {
+  const scale = Math.min(window.innerWidth / 402, window.innerHeight / 874, 1);
+  app.style.setProperty("--app-scale", String(scale));
+  app.style.setProperty("--app-width", `${402 * scale}px`);
+  app.style.setProperty("--app-height", `${874 * scale}px`);
+}
+
+function showScreen(name) {
+  Object.entries(screens).forEach(([screenName, screen]) => {
+    const active = screenName === name;
+    screen.hidden = !active;
+    screen.classList.toggle("is-active", active);
+  });
+
+  if (name === "dance") {
+    danceScreen.dispatchEvent(new CustomEvent("dance:start"));
+  } else {
+    danceScreen.dispatchEvent(new CustomEvent("dance:stop"));
+  }
+}
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
 function getSafePosition() {
-  const stageRect = stage.getBoundingClientRect();
-  const runnerRect = noRunner.getBoundingClientRect();
-  const maxX = Math.max(0, stageRect.width - runnerRect.width);
-  const maxY = Math.max(0, stageRect.height - runnerRect.height);
+  const screenWidth = screens.invite.offsetWidth;
+  const screenHeight = screens.invite.offsetHeight;
+  const minX = -stage.offsetLeft;
+  const maxX = Math.max(minX, screenWidth - stage.offsetLeft - noRunner.offsetWidth);
+  const maxY = Math.max(0, screenHeight - stage.offsetTop - noRunner.offsetHeight);
 
   let candidate = lastPosition;
   let attempts = 0;
@@ -35,7 +70,7 @@ function getSafePosition() {
   do {
     const minY = Math.min(108, maxY);
     candidate = {
-      x: Math.round(Math.random() * maxX),
+      x: Math.round(minX + Math.random() * (maxX - minX)),
       y: Math.round(minY + Math.random() * Math.max(0, maxY - minY)),
     };
     attempts += 1;
@@ -65,26 +100,39 @@ function moveNoButton(event) {
   }, 660);
 }
 
-function showSuccess() {
-  successScene.hidden = false;
-  document.body.style.overflow = "hidden";
-  successScene.dispatchEvent(new CustomEvent("dance:start"));
-  closeSuccess.focus({ preventScroll: true });
+function normalizeName(value) {
+  return value.trim().replace(/\s+/g, " ");
 }
 
-function hideSuccess() {
-  successScene.hidden = true;
-  document.body.style.overflow = "";
-  successScene.dispatchEvent(new CustomEvent("dance:stop"));
-  yesButton.focus({ preventScroll: true });
+function updateOkState() {
+  okButton.disabled = normalizeName(guestName.value).length === 0;
+}
+
+function storeName(name) {
+  const existing = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
+  existing.push({
+    name,
+    answeredAt: new Date().toISOString(),
+  });
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+}
+
+function goToDance(mode = "confirmed") {
+  const shortcut = mode === "shortcut";
+  seeYouText.hidden = shortcut;
+  heheButton.hidden = !shortcut;
+  showScreen("dance");
 }
 
 function clampRunnerToStage() {
-  const stageRect = stage.getBoundingClientRect();
-  const runnerRect = noRunner.getBoundingClientRect();
+  const screenWidth = screens.invite.offsetWidth;
+  const screenHeight = screens.invite.offsetHeight;
+  const minX = -stage.offsetLeft;
+  const maxX = Math.max(minX, screenWidth - stage.offsetLeft - noRunner.offsetWidth);
+  const maxY = Math.max(0, screenHeight - stage.offsetTop - noRunner.offsetHeight);
   lastPosition = {
-    x: clamp(lastPosition.x, 0, Math.max(0, stageRect.width - runnerRect.width)),
-    y: clamp(lastPosition.y, 0, Math.max(0, stageRect.height - runnerRect.height)),
+    x: clamp(lastPosition.x, minX, maxX),
+    y: clamp(lastPosition.y, 0, maxY),
   };
   noRunner.style.left = `${lastPosition.x}px`;
   noRunner.style.top = `${lastPosition.y}px`;
@@ -95,17 +143,53 @@ noButton.addEventListener("pointerenter", (event) => {
   if (event.pointerType !== "touch") moveNoButton(event);
 });
 
-yesButton.addEventListener("click", showSuccess);
-danceShortcut.addEventListener("click", showSuccess);
-closeSuccess.addEventListener("click", hideSuccess);
+yesButton.addEventListener("click", () => {
+  showScreen("name");
+  window.setTimeout(() => guestName.focus({ preventScroll: true }), 180);
+});
 
-successScene.addEventListener("click", (event) => {
-  if (event.target === successScene) hideSuccess();
+danceShortcut.addEventListener("click", () => goToDance("shortcut"));
+
+guestName.addEventListener("input", () => {
+  guestName.value = guestName.value.toLocaleUpperCase("pt-BR");
+  updateOkState();
+});
+
+nameForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = normalizeName(guestName.value);
+  if (!name) {
+    updateOkState();
+    guestName.focus({ preventScroll: true });
+    return;
+  }
+
+  storeName(name);
+  goToDance("confirmed");
+});
+
+heheButton.addEventListener("click", () => {
+  showScreen("invite");
+  yesButton.focus({ preventScroll: true });
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !successScene.hidden) hideSuccess();
+  if (event.key === "Escape" && !screens.invite.hidden) return;
+  if (event.key === "Escape") {
+    showScreen("invite");
+    yesButton.focus({ preventScroll: true });
+  }
 });
 
-window.addEventListener("resize", clampRunnerToStage);
-window.addEventListener("orientationchange", () => window.setTimeout(clampRunnerToStage, 220));
+window.addEventListener("resize", () => {
+  fitAppToViewport();
+  clampRunnerToStage();
+});
+window.addEventListener("orientationchange", () => {
+  window.setTimeout(() => {
+    fitAppToViewport();
+    clampRunnerToStage();
+  }, 220);
+});
+fitAppToViewport();
+updateOkState();

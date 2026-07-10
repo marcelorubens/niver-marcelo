@@ -12,49 +12,74 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="phone-poster" aria-labelledby="invite-title">
-      <section class="hero-copy">
-        <p class="kicker">Oi, aqui é o Marcelo</p>
-        <h1 id="invite-title">
-          <span>Você</span>
-          <span>vai no meu</span>
-          <span>aniver_</span>
-          <span>sário?</span>
-        </h1>
-      </section>
-
-      <section class="answer-stage" id="answerStage" aria-label="Confirme sua presença">
-        <button class="answer-button yes-button" id="yesButton" type="button">Sim!</button>
-
-        <div class="no-runner" id="noRunner">
-          <div class="cat-carrier" aria-hidden="true">
-            <img src="assets/gato.jpg" alt="" />
-            <span class="cat-arm cat-arm-left"></span>
-            <span class="cat-arm cat-arm-right"></span>
-          </div>
-          <button class="answer-button no-button" id="noButton" type="button">Não...</button>
+    <main class="invite-app" aria-live="polite">
+      <section class="screen screen-invite is-active" id="inviteScreen" aria-labelledby="invite-title">
+        <div class="hero-copy">
+          <p class="kicker">Oi, aqui é o Marcelo</p>
+          <h1 id="invite-title" class="stack-title invite-title">
+            <span class="title-line title-line-voce">Você</span>
+            <span class="title-line title-line-vai">vai no meu</span>
+            <span class="title-line title-line-aniver">aniver_</span>
+            <span class="title-line title-line-sario">sário?</span>
+          </h1>
         </div>
+
+        <section class="answer-stage" id="answerStage" aria-label="Confirme sua presença">
+          <button class="figma-button yes-button" id="yesButton" type="button">Sim!</button>
+
+          <div class="no-runner" id="noRunner">
+            <div class="cat-carrier" aria-hidden="true">
+              <img src="assets/gato.jpg" alt="" />
+              <span class="cat-arm cat-arm-left"></span>
+              <span class="cat-arm cat-arm-right"></span>
+            </div>
+            <button class="figma-button no-button" id="noButton" type="button">Não...</button>
+          </div>
+        </section>
+
+        <p class="date-line">18/07 - 17h - Rufus</p>
+        <p class="micro-hint" id="hint">Escolha com cuidado.</p>
+
+        <button class="dance-shortcut" id="danceShortcut" type="button" aria-label="Ver a dancinha">💃</button>
       </section>
 
-      <section class="event-details" aria-labelledby="details-title">
-        <h2 id="details-title">Onde e quando</h2>
-        <p>DATA - HORA - LOCAL</p>
+      <section class="screen screen-name" id="nameScreen" aria-labelledby="name-title" hidden>
+        <h2 id="name-title" class="stack-title name-title">
+          <span class="title-line name-line-qual">qual é</span>
+          <span class="title-line name-line-nome">seu nome?</span>
+        </h2>
+
+        <form class="name-form" id="nameForm" autocomplete="off">
+          <label class="name-input-wrap" for="guestName">
+            <span class="sr-only">Seu nome</span>
+            <input
+              class="name-input"
+              id="guestName"
+              name="guestName"
+              type="text"
+              inputmode="text"
+              autocomplete="name"
+              autocapitalize="words"
+              placeholder=""
+              maxlength="32"
+            />
+            <span class="input-underline" aria-hidden="true"></span>
+          </label>
+
+          <button class="figma-button ok-button" id="okButton" type="submit" disabled>OK</button>
+        </form>
       </section>
 
-      <p class="micro-hint" id="hint" aria-live="polite">Escolha com cuidado.</p>
+      <section class="screen screen-dance" id="danceScreen" aria-labelledby="dance-title" hidden>
+        <div class="dance-placeholder" id="dancePlaceholder">
+          <h2 id="dance-title">Aqui vai a gata dançando</h2>
+          <div class="dance-stage" id="danceStage" aria-label="Gato 3D dançando samba"></div>
+        </div>
 
-      <button class="dance-shortcut" id="danceShortcut" type="button" aria-label="Ver a dancinha">💃</button>
+        <p class="see-you" id="seeYouText">Te vejo lá</p>
+        <button class="figma-button hehe-button" id="heheButton" type="button" hidden>Hehe</button>
+      </section>
     </main>
-
-    <section class="success-scene" id="successScene" role="dialog" aria-modal="true" aria-labelledby="successTitle" hidden>
-      <div class="success-copy">
-        <p class="kicker">Resposta certa</p>
-        <h2 id="successTitle">Oba!</h2>
-        <p>Te espero no meu aniversário. O gato já começou o samba.</p>
-        <button class="answer-button yes-button close-button" id="closeSuccess" type="button">Voltar</button>
-      </div>
-      <div class="dance-stage" id="danceStage" aria-label="Gato 3D dançando samba"></div>
-    </section>
 
     <script src="script.js" defer></script>
     <script src="dance-scene.js" type="module"></script>

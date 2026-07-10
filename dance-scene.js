@@ -2,7 +2,7 @@ import * as THREE from "./vendor/three.module.min.js";
 import { GLTFLoader } from "./vendor/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "./vendor/libs/meshopt_decoder.module.js";
 
-const overlay = document.querySelector("#successScene");
+const overlay = document.querySelector("#danceScreen");
 const mount = document.querySelector("#danceStage");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -25,7 +25,7 @@ if (overlay && mount) {
     }
     ensureScene().then((api) => api?.play());
   });
-  visibilityObserver.observe(overlay, { attributes: true, attributeFilter: ["hidden"] });
+  visibilityObserver.observe(overlay, { attributes: true, attributeFilter: ["hidden", "class"] });
 
   if (!overlay.hidden) {
     ensureScene().then((api) => api?.play());
@@ -89,19 +89,19 @@ async function initDanceScene() {
     const width = Math.max(1, mount.clientWidth);
     const height = Math.max(1, mount.clientHeight);
     const aspect = width / height;
-    const requiredHeight = Math.max(7.4, 5.8 / aspect);
+    const requiredHeight = Math.max(6.7, 5.2 / aspect);
     const distance = requiredHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
 
     renderer.setSize(width, height, false);
     camera.aspect = aspect;
-    camera.position.set(0, 0.1, distance);
-    camera.lookAt(0, -0.45, 0);
+    camera.position.set(0, 0.05, distance);
+    camera.lookAt(0, -0.35, 0);
     camera.updateProjectionMatrix();
   }
 
   function update(delta) {
     elapsed += delta;
-    dancer.group.rotation.y = Math.sin(elapsed * 0.7) * 0.22;
+    dancer.group.rotation.y = Math.sin(elapsed * 0.7) * 0.22 + 0.08;
     dancer.group.position.x = Math.sin(elapsed * 1.1) * 0.16;
     dancer.mixer.update(delta);
   }
@@ -165,8 +165,8 @@ function createSambaCat(baseModel, sambaMotion, catTexture) {
   const headBone = model.getObjectByName("mixamorigHead");
   if (headBone) headBone.add(createRiggedCatHead(headTexture));
 
-  model.scale.setScalar(0.03);
-  model.position.y = -1.25;
+  model.scale.setScalar(0.031);
+  model.position.y = -1.32;
   group.add(model);
 
   const mixer = new THREE.AnimationMixer(model);
