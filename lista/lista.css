@@ -32,6 +32,7 @@ body {
 .list-message,
 .rsvp-list,
 .admin-password,
+.copy-button,
 .logout-button {
   font-family: var(--font-display);
   font-style: italic;
@@ -144,14 +145,29 @@ body {
   cursor: default;
 }
 
+.copy-button,
 .logout-button {
   margin-top: 30px;
   padding: 8px 12px;
   border: 0;
   color: var(--ink);
-  background: var(--green);
   cursor: pointer;
   font-size: 13px;
+}
+
+.copy-button {
+  background: var(--blue);
+}
+
+.copy-button:disabled {
+  color: var(--disabled-text);
+  background: var(--disabled);
+  cursor: default;
+}
+
+.logout-button {
+  margin-left: 12px;
+  background: var(--green);
 }
 
 .list-message {

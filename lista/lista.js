@@ -8,6 +8,7 @@ const adminForm = document.querySelector("#adminForm");
 const adminPassword = document.querySelector("#adminPassword");
 const adminButton = document.querySelector("#adminButton");
 const listContent = document.querySelector("#listContent");
+const copyButton = document.querySelector("#copyButton");
 const logoutButton = document.querySelector("#logoutButton");
 let currentRows = [];
 let currentPassword = window.sessionStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY) || "";
@@ -74,6 +75,7 @@ function renderRows(rows) {
   });
 
   count.textContent = `${rows.length} ${rows.length === 1 ? "pessoa" : "pessoas"}`;
+  copyButton.disabled = rows.length === 0;
   message.textContent = rows.length ? "" : "Ninguém confirmou ainda.";
 }
 
@@ -85,6 +87,7 @@ function showLocked(messageText = "") {
   listContent.hidden = true;
   list.replaceChildren();
   count.textContent = "";
+  copyButton.disabled = true;
   message.textContent = messageText;
 }
 
@@ -131,10 +134,39 @@ async function deleteRsvp(id) {
   });
 }
 
+async function copyNames() {
+  const names = currentRows.map((row) => row.name).join("\n");
+  if (!names) return;
+
+  try {
+    await window.navigator.clipboard.writeText(names);
+    message.textContent = "Nomes copiados!";
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = names;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-999px";
+    document.body.append(textarea);
+    textarea.select();
+
+    try {
+      document.execCommand("copy");
+      message.textContent = "Nomes copiados!";
+    } catch {
+      message.textContent = "Não consegui copiar os nomes.";
+    } finally {
+      textarea.remove();
+    }
+  }
+}
+
 adminForm.addEventListener("submit", (event) => {
   event.preventDefault();
   unlockList(adminPassword.value);
 });
+
+copyButton.addEventListener("click", copyNames);
 
 logoutButton.addEventListener("click", () => {
   showLocked();

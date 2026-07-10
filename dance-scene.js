@@ -186,23 +186,63 @@ function createFabricMaterial() {
   canvas.width = 512;
   canvas.height = 512;
   const context = canvas.getContext("2d");
-  context.fillStyle = "#ee4795";
+  context.fillStyle = "#f8fbff";
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "#cde39e";
 
-  for (let y = -80; y < canvas.height + 80; y += 76) {
-    context.save();
-    context.translate(canvas.width / 2, y);
-    context.rotate(-0.38);
-    context.fillRect(-canvas.width, -8, canvas.width * 2, 16);
-    context.restore();
-  }
+  const balloons = [
+    { x: 50, y: 48, r: 28, color: "#ee4795" },
+    { x: 132, y: 86, r: 34, color: "#aedaee" },
+    { x: 226, y: 38, r: 30, color: "#cde39e" },
+    { x: 328, y: 74, r: 36, color: "#ffd166" },
+    { x: 430, y: 40, r: 31, color: "#ff6b6b" },
+    { x: 84, y: 176, r: 38, color: "#b388ff" },
+    { x: 190, y: 156, r: 29, color: "#4ecdc4" },
+    { x: 286, y: 188, r: 35, color: "#ee4795" },
+    { x: 404, y: 164, r: 30, color: "#cde39e" },
+    { x: 32, y: 302, r: 32, color: "#ffd166" },
+    { x: 144, y: 282, r: 36, color: "#ff6b6b" },
+    { x: 246, y: 322, r: 30, color: "#aedaee" },
+    { x: 356, y: 288, r: 38, color: "#b388ff" },
+    { x: 472, y: 318, r: 28, color: "#4ecdc4" },
+    { x: 78, y: 430, r: 34, color: "#cde39e" },
+    { x: 206, y: 444, r: 38, color: "#ee4795" },
+    { x: 316, y: 420, r: 30, color: "#ffd166" },
+    { x: 438, y: 452, r: 36, color: "#aedaee" },
+  ];
+
+  balloons.forEach(({ x, y, r, color }, index) => {
+    const stringEndY = y + r + 42;
+    context.beginPath();
+    context.moveTo(x, y + r - 3);
+    context.bezierCurveTo(x - 12, y + r + 12, x + 14, y + r + 22, x, stringEndY);
+    context.strokeStyle = "rgba(5, 13, 19, 0.36)";
+    context.lineWidth = 2;
+    context.stroke();
+
+    context.beginPath();
+    context.ellipse(x, y, r * 0.84, r, index % 2 ? 0.2 : -0.16, 0, Math.PI * 2);
+    context.fillStyle = color;
+    context.fill();
+
+    context.beginPath();
+    context.ellipse(x - r * 0.24, y - r * 0.34, r * 0.18, r * 0.28, -0.42, 0, Math.PI * 2);
+    context.fillStyle = "rgba(255, 255, 255, 0.62)";
+    context.fill();
+
+    context.beginPath();
+    context.moveTo(x - 6, y + r - 2);
+    context.lineTo(x + 6, y + r - 2);
+    context.lineTo(x, y + r + 8);
+    context.closePath();
+    context.fillStyle = color;
+    context.fill();
+  });
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(1.8, 1.8);
+  texture.repeat.set(1.35, 1.35);
 
   return new THREE.MeshStandardMaterial({
     map: texture,
