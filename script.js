@@ -8,7 +8,6 @@ const stage = document.querySelector("#answerStage");
 const noRunner = document.querySelector("#noRunner");
 const noButton = document.querySelector("#noButton");
 const yesButton = document.querySelector("#yesButton");
-const hint = document.querySelector("#hint");
 const danceShortcut = document.querySelector("#danceShortcut");
 const nameForm = document.querySelector("#nameForm");
 const guestName = document.querySelector("#guestName");
@@ -20,22 +19,14 @@ const app = document.querySelector(".invite-app");
 
 const STORAGE_KEY = "niver-marcelo-rsvp-names";
 
-const messages = [
-  "O gato roubou o não.",
-  "Não vale fugir do parabéns.",
-  "Quase, mas ele sambou pra longe.",
-  "Acho que só sobrou o SIM!",
-  "O gato vetou essa resposta.",
-];
-
 let escapes = 0;
 let moving = false;
 let lastPosition = { x: 0, y: 108 };
 
 function fitAppToViewport() {
-  const scale = Math.min(window.innerWidth / 402, window.innerHeight / 874, 1);
+  const scale = Math.min(window.innerHeight / 874, 1);
   app.style.setProperty("--app-scale", String(scale));
-  app.style.setProperty("--app-width", `${402 * scale}px`);
+  app.style.setProperty("--app-width", "100vw");
   app.style.setProperty("--app-height", `${874 * scale}px`);
 }
 
@@ -60,24 +51,33 @@ function clamp(value, min, max) {
 function getSafePosition() {
   const screenWidth = screens.invite.offsetWidth;
   const screenHeight = screens.invite.offsetHeight;
+  const buttonHeight = noRunner.offsetHeight;
+  const minDistance = buttonHeight * 2;
   const minX = -stage.offsetLeft;
   const maxX = Math.max(minX, screenWidth - stage.offsetLeft - noRunner.offsetWidth);
-  const maxY = Math.max(0, screenHeight - stage.offsetTop - noRunner.offsetHeight);
+  const minY = -stage.offsetTop;
+  const maxY = Math.max(minY, screenHeight - stage.offsetTop - buttonHeight);
 
   let candidate = lastPosition;
+  let bestCandidate = lastPosition;
+  let bestDistance = 0;
   let attempts = 0;
 
   do {
-    const minY = Math.min(108, maxY);
     candidate = {
       x: Math.round(minX + Math.random() * (maxX - minX)),
-      y: Math.round(minY + Math.random() * Math.max(0, maxY - minY)),
+      y: Math.round(minY + Math.random() * (maxY - minY)),
     };
+    const distance = Math.hypot(candidate.x - lastPosition.x, candidate.y - lastPosition.y);
+    if (distance > bestDistance) {
+      bestCandidate = candidate;
+      bestDistance = distance;
+    }
     attempts += 1;
-  } while (Math.hypot(candidate.x - lastPosition.x, candidate.y - lastPosition.y) < 42 && attempts < 12);
+  } while (Math.hypot(candidate.x - lastPosition.x, candidate.y - lastPosition.y) < minDistance && attempts < 24);
 
-  lastPosition = candidate;
-  return candidate;
+  lastPosition = bestDistance >= minDistance ? candidate : bestCandidate;
+  return lastPosition;
 }
 
 function moveNoButton(event) {
@@ -91,8 +91,6 @@ function moveNoButton(event) {
   noRunner.classList.add("travelling");
   noRunner.style.left = `${next.x}px`;
   noRunner.style.top = `${next.y}px`;
-  hint.textContent = messages[Math.min(escapes - 1, messages.length - 1)];
-  hint.classList.add("visible");
 
   window.setTimeout(() => {
     noRunner.classList.remove("travelling");
@@ -129,10 +127,11 @@ function clampRunnerToStage() {
   const screenHeight = screens.invite.offsetHeight;
   const minX = -stage.offsetLeft;
   const maxX = Math.max(minX, screenWidth - stage.offsetLeft - noRunner.offsetWidth);
-  const maxY = Math.max(0, screenHeight - stage.offsetTop - noRunner.offsetHeight);
+  const minY = -stage.offsetTop;
+  const maxY = Math.max(minY, screenHeight - stage.offsetTop - noRunner.offsetHeight);
   lastPosition = {
     x: clamp(lastPosition.x, minX, maxX),
-    y: clamp(lastPosition.y, 0, maxY),
+    y: clamp(lastPosition.y, minY, maxY),
   };
   noRunner.style.left = `${lastPosition.x}px`;
   noRunner.style.top = `${lastPosition.y}px`;
