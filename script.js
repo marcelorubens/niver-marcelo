@@ -12,12 +12,17 @@ const danceShortcut = document.querySelector("#danceShortcut");
 const nameForm = document.querySelector("#nameForm");
 const guestName = document.querySelector("#guestName");
 const okButton = document.querySelector("#okButton");
+const nameError = document.querySelector("#nameError");
 const seeYouText = document.querySelector("#seeYouText");
 const heheButton = document.querySelector("#heheButton");
 const danceScreen = document.querySelector("#danceScreen");
 const app = document.querySelector(".invite-app");
 
 const STORAGE_KEY = "niver-marcelo-rsvp-names";
+const DUPLICATE_MESSAGE = "Nome já está na lista!";
+const SAVE_ERROR_MESSAGE = "Não consegui salvar agora.";
+const SUPABASE_CONFIG = window.NIVER_SUPABASE || {};
+const SUPABASE_PLACEHOLDER_KEY = "PASTE_SUPABASE_ANON_KEY_HERE";
 
 let escapes = 0;
 let moving = false;
@@ -100,14 +105,82 @@ function normalizeName(value) {
   return value.trim().replace(/\s+/g, " ");
 }
 
+function normalizeNameKey(value) {
+  return normalizeName(value)
+    .toLocaleUpperCase("pt-BR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function hasSupabaseConfig() {
+  return Boolean(
+    SUPABASE_CONFIG.url
+      && SUPABASE_CONFIG.anonKey
+      && SUPABASE_CONFIG.anonKey !== SUPABASE_PLACEHOLDER_KEY,
+  );
+}
+
+function getSupabaseHeaders(prefer) {
+  const headers = {
+    apikey: SUPABASE_CONFIG.anonKey,
+    Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
+    "Content-Type": "application/json",
+  };
+
+  if (prefer) headers.Prefer = prefer;
+  return headers;
+}
+
 function updateOkState() {
   okButton.disabled = normalizeName(guestName.value).length === 0;
 }
 
+function getStoredNames() {
+  return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
+}
+
+function isDuplicateName(name) {
+  const nameKey = normalizeNameKey(name);
+  return getStoredNames().some((entry) => normalizeNameKey(entry.name) === nameKey);
+}
+
+function setNameError(message = "") {
+  nameError.textContent = message;
+}
+
+async function saveRemoteName(name) {
+  const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/rsvps`, {
+    method: "POST",
+    headers: getSupabaseHeaders("return=minimal"),
+    body: JSON.stringify({
+      name,
+      name_key: normalizeNameKey(name),
+    }),
+  });
+
+  if (response.ok) return;
+
+  let details = {};
+  try {
+    details = await response.json();
+  } catch {
+    details = {};
+  }
+
+  if (response.status === 409 || details.code === "23505") {
+    const error = new Error(DUPLICATE_MESSAGE);
+    error.code = "duplicate";
+    throw error;
+  }
+
+  throw new Error(SAVE_ERROR_MESSAGE);
+}
+
 function storeName(name) {
-  const existing = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
+  const existing = getStoredNames();
   existing.push({
     name,
+    nameKey: normalizeNameKey(name),
     answeredAt: new Date().toISOString(),
   });
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
@@ -149,10 +222,11 @@ danceShortcut.addEventListener("click", () => goToDance("shortcut"));
 
 guestName.addEventListener("input", () => {
   guestName.value = guestName.value.toLocaleUpperCase("pt-BR");
+  setNameError();
   updateOkState();
 });
 
-nameForm.addEventListener("submit", (event) => {
+nameForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const name = normalizeName(guestName.value);
   if (!name) {
@@ -161,8 +235,28 @@ nameForm.addEventListener("submit", (event) => {
     return;
   }
 
-  storeName(name);
-  goToDance("confirmed");
+  okButton.disabled = true;
+
+  if (!hasSupabaseConfig() && isDuplicateName(name)) {
+    setNameError(DUPLICATE_MESSAGE);
+    guestName.focus({ preventScroll: true });
+    updateOkState();
+    return;
+  }
+
+  try {
+    if (hasSupabaseConfig()) {
+      await saveRemoteName(name);
+    }
+
+    storeName(name);
+    goToDance("confirmed");
+  } catch (error) {
+    setNameError(error.code === "duplicate" ? DUPLICATE_MESSAGE : SAVE_ERROR_MESSAGE);
+    guestName.focus({ preventScroll: true });
+  } finally {
+    updateOkState();
+  }
 });
 
 heheButton.addEventListener("click", () => {

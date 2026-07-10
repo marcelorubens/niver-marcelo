@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050d13" />
+    <meta name="robots" content="noindex" />
+    <title>Lista de RSVP</title>
+    <link rel="icon" href="../assets/gato.jpg" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="lista.css" />
+  </head>
+  <body>
+    <main class="list-page">
+      <section class="list-card" aria-labelledby="listTitle">
+        <p class="kicker">Niver do Marcelo</p>
+        <h1 class="stack-title list-title" id="listTitle">Lista</h1>
+
+        <form class="admin-form" id="adminForm" autocomplete="off">
+          <label class="admin-password-wrap" for="adminPassword">
+            <span class="sr-only">Senha da lista</span>
+            <input
+              class="admin-password"
+              id="adminPassword"
+              name="adminPassword"
+              type="password"
+              autocomplete="current-password"
+              placeholder="senha"
+              required
+            />
+          </label>
+          <button class="figma-button admin-button" id="adminButton" type="submit">Entrar</button>
+        </form>
+
+        <div class="list-content" id="listContent" hidden>
+          <p class="list-count" id="listCount">Carregando...</p>
+          <ol class="rsvp-list" id="rsvpList"></ol>
+          <button class="logout-button" id="logoutButton" type="button">Sair</button>
+        </div>
+
+        <p class="list-message" id="listMessage" role="status"></p>
+      </section>
+    </main>
+
+    <script src="../supabase-config.js"></script>
+    <script src="lista.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+body {
+  overflow: auto;
+}
+
+.list-page {
+  display: flex;
+  width: 100vw;
+  min-height: 100svh;
+  padding: 32px 16px;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+
+.list-card {
+  width: min(520px, calc(100vw - 32px));
+  color: var(--white);
+  text-align: center;
+}
+
+.list-title {
+  margin: 0;
+  font-size: clamp(58px, 18vw, 104px);
+  line-height: 0.95;
+  font-variation-settings:
+    "wght" 641,
+    "wdth" 151,
+    "slnt" 0;
+}
+
+.list-count,
+.list-message,
+.rsvp-list,
+.admin-password,
+.logout-button {
+  font-family: var(--font-display);
+  font-style: italic;
+  text-transform: uppercase;
+  font-variation-settings:
+    "wght" 641,
+    "wdth" 151,
+    "slnt" 0;
+}
+
+.admin-form {
+  display: flex;
+  margin-top: 32px;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.admin-password-wrap {
+  display: block;
+  width: min(306px, calc(100vw - 32px));
+  height: 64px;
+  background: var(--blue);
+}
+
+.admin-password {
+  width: 100%;
+  height: 100%;
+  padding: 10px 24px;
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  font-size: 32px;
+  font-weight: 1000;
+  line-height: 1;
+  text-align: center;
+  caret-color: var(--ink);
+  font-variation-settings:
+    "wght" 1000,
+    "wdth" 57,
+    "slnt" 0;
+}
+
+.admin-password:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 5px;
+}
+
+.admin-button {
+  min-height: 64px;
+  width: 185px;
+  padding: 10px 30px;
+  background: var(--green);
+  font-size: 36px;
+}
+
+.admin-button:disabled {
+  color: var(--disabled-text);
+  background: var(--disabled);
+  cursor: default;
+}
+
+.list-count {
+  margin: 24px 0 28px;
+  color: var(--green);
+  font-size: 19px;
+  line-height: 24px;
+}
+
+.rsvp-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+  list-style: none;
+  font-size: clamp(26px, 8vw, 42px);
+  line-height: 1.05;
+}
+
+.rsvp-list li {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+}
+
+.delete-rsvp {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--pink);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 641;
+  line-height: 1;
+  text-transform: uppercase;
+  font-variation-settings:
+    "wght" 641,
+    "wdth" 151,
+    "slnt" 0;
+}
+
+.delete-rsvp:disabled {
+  opacity: 0.48;
+  cursor: default;
+}
+
+.logout-button {
+  margin-top: 30px;
+  padding: 8px 12px;
+  border: 0;
+  color: var(--ink);
+  background: var(--green);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.list-message {
+  margin: 28px 0 0;
+  color: var(--pink);
+  font-size: 16px;
+  line-height: 20px;
+}

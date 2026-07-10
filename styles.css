@@ -268,19 +268,6 @@ button {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.36);
 }
 
-.cat-carrier::after {
-  content: "";
-  position: absolute;
-  top: 14px;
-  left: 39px;
-  width: 11px;
-  height: 11px;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  background: #f2352f;
-  box-shadow: 0 0 0 1px rgba(248, 251, 255, 0.36);
-}
-
 .no-runner.travelling {
   pointer-events: none;
 }
@@ -397,6 +384,26 @@ button {
 
 .name-input:not(:placeholder-shown) + .input-underline {
   opacity: 0;
+}
+
+.name-error {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 100%;
+  color: var(--pink);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 641;
+  line-height: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  font-variation-settings:
+    "wght" 641,
+    "wdth" 151,
+    "slnt" 0;
+  pointer-events: none;
 }
 
 .ok-button {
