@@ -186,63 +186,111 @@ function createFabricMaterial() {
   canvas.width = 512;
   canvas.height = 512;
   const context = canvas.getContext("2d");
-  context.fillStyle = "#f8fbff";
+  context.fillStyle = "#6f5bff";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  const balloons = [
-    { x: 50, y: 48, r: 28, color: "#ee4795" },
-    { x: 132, y: 86, r: 34, color: "#aedaee" },
-    { x: 226, y: 38, r: 30, color: "#cde39e" },
-    { x: 328, y: 74, r: 36, color: "#ffd166" },
-    { x: 430, y: 40, r: 31, color: "#ff6b6b" },
-    { x: 84, y: 176, r: 38, color: "#b388ff" },
-    { x: 190, y: 156, r: 29, color: "#4ecdc4" },
-    { x: 286, y: 188, r: 35, color: "#ee4795" },
-    { x: 404, y: 164, r: 30, color: "#cde39e" },
-    { x: 32, y: 302, r: 32, color: "#ffd166" },
-    { x: 144, y: 282, r: 36, color: "#ff6b6b" },
-    { x: 246, y: 322, r: 30, color: "#aedaee" },
-    { x: 356, y: 288, r: 38, color: "#b388ff" },
-    { x: 472, y: 318, r: 28, color: "#4ecdc4" },
-    { x: 78, y: 430, r: 34, color: "#cde39e" },
-    { x: 206, y: 444, r: 38, color: "#ee4795" },
-    { x: 316, y: 420, r: 30, color: "#ffd166" },
-    { x: 438, y: 452, r: 36, color: "#aedaee" },
+  const balloonColors = [
+    "#ee4795",
+    "#aedaee",
+    "#cde39e",
+    "#ffd166",
+    "#ff6b6b",
+    "#4ecdc4",
+    "#ff9f1c",
+    "#f8fbff",
   ];
+  const drawBalloon = ({ x, y, r, color, tilt = 0 }) => {
+    const stringEndY = y + r + 28;
 
-  balloons.forEach(({ x, y, r, color }, index) => {
-    const stringEndY = y + r + 42;
     context.beginPath();
     context.moveTo(x, y + r - 3);
-    context.bezierCurveTo(x - 12, y + r + 12, x + 14, y + r + 22, x, stringEndY);
-    context.strokeStyle = "rgba(5, 13, 19, 0.36)";
-    context.lineWidth = 2;
+    context.bezierCurveTo(x - 9, y + r + 8, x + 10, y + r + 16, x, stringEndY);
+    context.strokeStyle = "rgba(5, 13, 19, 0.28)";
+    context.lineWidth = 1.8;
     context.stroke();
 
     context.beginPath();
-    context.ellipse(x, y, r * 0.84, r, index % 2 ? 0.2 : -0.16, 0, Math.PI * 2);
+    context.ellipse(x, y, r * 0.82, r, tilt, 0, Math.PI * 2);
     context.fillStyle = color;
     context.fill();
 
     context.beginPath();
-    context.ellipse(x - r * 0.24, y - r * 0.34, r * 0.18, r * 0.28, -0.42, 0, Math.PI * 2);
-    context.fillStyle = "rgba(255, 255, 255, 0.62)";
+    context.ellipse(x - r * 0.25, y - r * 0.34, r * 0.18, r * 0.27, -0.42, 0, Math.PI * 2);
+    context.fillStyle = "rgba(255, 255, 255, 0.58)";
     context.fill();
 
     context.beginPath();
-    context.moveTo(x - 6, y + r - 2);
-    context.lineTo(x + 6, y + r - 2);
-    context.lineTo(x, y + r + 8);
+    context.moveTo(x - 5, y + r - 2);
+    context.lineTo(x + 5, y + r - 2);
+    context.lineTo(x, y + r + 7);
     context.closePath();
     context.fillStyle = color;
     context.fill();
-  });
+  };
+
+  const drawBeer = ({ x, y, scale = 1, tilt = 0 }) => {
+    context.save();
+    context.translate(x, y);
+    context.rotate(tilt);
+    context.scale(scale, scale);
+
+    context.fillStyle = "#f8fbff";
+    context.fillRect(-12, -18, 24, 7);
+    context.beginPath();
+    context.arc(-8, -18, 5, 0, Math.PI * 2);
+    context.arc(0, -20, 6, 0, Math.PI * 2);
+    context.arc(8, -18, 5, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = "#ffb703";
+    context.fillRect(-11, -12, 22, 30);
+    context.fillStyle = "rgba(255, 255, 255, 0.34)";
+    context.fillRect(-6, -8, 4, 22);
+
+    context.strokeStyle = "#f8fbff";
+    context.lineWidth = 4;
+    context.strokeRect(-12, -14, 24, 34);
+    context.beginPath();
+    context.arc(15, 2, 9, -Math.PI / 2, Math.PI / 2);
+    context.stroke();
+
+    context.restore();
+  };
+
+  for (let y = 18; y < canvas.height + 54; y += 72) {
+    for (let x = 24; x < canvas.width + 48; x += 72) {
+      const index = Math.floor((x + y) / 24);
+      const offsetX = ((index * 17) % 27) - 13;
+      const offsetY = ((index * 23) % 25) - 12;
+
+      drawBalloon({
+        x: x + offsetX,
+        y: y + offsetY,
+        r: 13 + (index % 5),
+        color: balloonColors[index % balloonColors.length],
+        tilt: index % 2 ? 0.22 : -0.18,
+      });
+    }
+  }
+
+  for (let y = 50; y < canvas.height + 44; y += 86) {
+    for (let x = 56; x < canvas.width + 64; x += 96) {
+      const index = Math.floor((x * 3 + y * 5) / 37);
+
+      drawBeer({
+        x: x + ((index * 19) % 31) - 15,
+        y: y + ((index * 13) % 29) - 14,
+        scale: 0.58 + (index % 3) * 0.08,
+        tilt: index % 2 ? 0.16 : -0.18,
+      });
+    }
+  }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(1.35, 1.35);
+  texture.repeat.set(1.7, 1.7);
 
   return new THREE.MeshStandardMaterial({
     map: texture,
